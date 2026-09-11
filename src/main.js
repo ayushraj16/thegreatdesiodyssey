@@ -18,6 +18,15 @@ import { TravelModal }          from './ui/TravelModal.js';
 import { IndiaMapModal }        from './ui/IndiaMapModal.js';
 import { LandingScreen }        from './ui/LandingScreen.js';
 
+import { CinematicMap }         from './world/CinematicMap.js';
+import { OrbitalParticles }     from './world/OrbitalParticles.js';
+
+import { EffectComposer }       from 'three/examples/jsm/postprocessing/EffectComposer.js';
+import { RenderPass }           from 'three/examples/jsm/postprocessing/RenderPass.js';
+import { ShaderPass }           from 'three/examples/jsm/postprocessing/ShaderPass.js';
+
+let gameState = 'CINEMATIC'; // 'CINEMATIC' or 'PLAYING'
+
 // ─────────────────────────────────────────────────────────────────────────────
 // Renderer
 // ─────────────────────────────────────────────────────────────────────────────
@@ -31,7 +40,8 @@ renderer.toneMapping       = THREE.ACESFilmicToneMapping;
 renderer.toneMappingExposure = 1.05;
 
 const scene  = new THREE.Scene();
-scene.fog    = new THREE.FogExp2('#81d4fa', 0.008);
+scene.background = new THREE.Color('#ffffff'); // White background
+scene.fog    = new THREE.FogExp2('#ffffff', 0.003);
 
 const camera = new THREE.PerspectiveCamera(65, window.innerWidth / window.innerHeight, 0.1, 250);
 
@@ -250,7 +260,57 @@ const hud = {
 };
 
 // ─────────────────────────────────────────────────────────────────────────────
-// World modules
+// Cinematic Mode Assets
+// ─────────────────────────────────────────────────────────────────────────────
+const cinematicMap = new CinematicMap(scene);
+cinematicMap.group.position.y = 2000;
+
+const orbitalParticles = new OrbitalParticles(scene);
+orbitalParticles.mesh.position.y = 2000;
+
+// Deep space cinematic lighting
+const cinematicAmbient = new THREE.AmbientLight('#201040', 2.0);
+const cinematicRim = new THREE.DirectionalLight('#00ffff', 3.0);
+cinematicRim.position.set(-50, 2020, -50);
+const cinematicRim2 = new THREE.DirectionalLight('#ff00ff', 3.0);
+cinematicRim2.position.set(50, 1980, 50);
+scene.add(cinematicAmbient, cinematicRim, cinematicRim2);
+
+// Post-Processing for retro dithered effect
+const composer = new EffectComposer(renderer);
+const renderPass = new RenderPass(scene, camera);
+composer.addPass(renderPass);
+
+const PixelShader = {
+  uniforms: {
+    'tDiffuse': { value: null },
+    'resolution': { value: new THREE.Vector2(window.innerWidth, window.innerHeight) },
+    'pixelSize': { value: 3.0 }
+  },
+  vertexShader: `
+    varying vec2 vUv;
+    void main() { vUv = uv; gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0); }
+  `,
+  fragmentShader: `
+    uniform sampler2D tDiffuse;
+    uniform vec2 resolution;
+    uniform float pixelSize;
+    varying vec2 vUv;
+    void main() {
+      vec2 dxy = pixelSize / resolution;
+      vec2 coord = dxy * floor(vUv / dxy);
+      vec4 color = texture2D(tDiffuse, coord);
+      float l = dot(color.rgb, vec3(0.299, 0.587, 0.114));
+      color.rgb = mix(vec3(l), color.rgb, 1.8);
+      gl_FragColor = color;
+    }
+  `
+};
+const pixelPass = new ShaderPass(PixelShader);
+composer.addPass(pixelPass);
+
+// ─────────────────────────────────────────────────────────────────────────────
+// The Map (Procedural Terrain)
 // ─────────────────────────────────────────────────────────────────────────────
 const environment   = new Environment(scene);
 environment.init();
@@ -299,8 +359,23 @@ const travelModal = new TravelModal(cloudOverlay, (pos) => {
 // Landing screen
 // ─────────────────────────────────────────────────────────────────────────────
 new LandingScreen(() => {
-  // Anything to do on game start can go here
+  gameState = 'PLAYING';
+  document.body.classList.remove('cinematic-mode');
+  
+  cinematicMap.setVisible(false);
+  orbitalParticles.setVisible(false);
+  
+  scene.remove(cinematicAmbient, cinematicRim, cinematicRim2);
+  scene.background = null; 
+  scene.fog.color.set('#81d4fa');
+  scene.fog.density = 0.008;
+  
+  player.pitch = 0.2;
 }, canvas);
+
+document.getElementById('exit-btn')?.addEventListener('click', () => {
+  window.location.reload();
+});
 
 // ─────────────────────────────────────────────────────────────────────────────
 // Zone state label logic (Z-axis layout)
@@ -367,37 +442,41 @@ function animate() {
   const delta   = Math.min(clock.getDelta(), 0.1);
   const elapsed = clock.elapsedTime;
 
-  // Update grass wind shader time
-  uniforms.uTime.value = elapsed;
+  if (gameState === 'CINEMATIC') {
+    cinematicMap.update(elapsed);
+    orbitalParticles.update(elapsed);
+    
+    const radius = 90;
+    const speed = elapsed * 0.05; 
+    camera.position.set(Math.cos(speed) * radius, 2040, Math.sin(speed) * radius);
+    camera.lookAt(0, 2000, 0);
+    
+    const fpsEl = document.getElementById('perf-fps');
+    if (fpsEl) fpsEl.textContent = (1 / delta).toFixed(1);
+    
+    composer.render();
+  } else {
+    uniforms.uTime.value = elapsed;
+    player.update(delta, terrain);
+    waterBodies.update(elapsed, delta, player.position, player);
+    player.onBoat  = waterBodies.playerOnBoat;
+    player.boatRef = waterBodies.ponds.find(p => p.playerOnBoat)?.boat || null;
 
-  // Player (movement + spring camera)
-  player.update(delta, terrain);
-
-  // Boat boarding / disembark
-  waterBodies.update(elapsed, delta, player.position, player);
-
-  // If player is on a boat, override onBoat state in player
-  player.onBoat  = waterBodies.playerOnBoat;
-  player.boatRef = waterBodies.ponds.find(p => p.playerOnBoat)?.boat || null;
-
-  // World
-  environment.update(elapsed, delta);
-  train.update(delta, player.position);
-  collectibleMgr.update(delta, elapsed, player.position, player);
-
-  // HUD
-  updateHUD(elapsed);
-
-  // Clear one-shot edge keys after all systems have read them
-  clearEdge();
-
-  renderer.render(scene, camera);
+    environment.update(elapsed, delta);
+    train.update(delta, player.position);
+    collectibleMgr.update(delta, elapsed, player.position, player);
+    updateHUD(elapsed);
+    clearEdge();
+    renderer.render(scene, camera);
+  }
 }
 
 window.addEventListener('resize', () => {
   camera.aspect = window.innerWidth / window.innerHeight;
   camera.updateProjectionMatrix();
   renderer.setSize(window.innerWidth, window.innerHeight);
+  composer.setSize(window.innerWidth, window.innerHeight);
+  pixelPass.uniforms['resolution'].value.set(window.innerWidth, window.innerHeight);
 });
 
 animate();

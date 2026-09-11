@@ -39,10 +39,10 @@
       align-items: center;
       justify-content: center;
       overflow: hidden;
-      background: #fdfcf9 url('/content/images/bg_neural_india.jpg') center/cover no-repeat;
+      background: transparent;
+      pointer-events: none;
     }
-
-    .title-content { position: relative; z-index: 2; text-align: center; padding: 0 20px; max-width: 860px; }
+    .title-content { position: relative; z-index: 2; text-align: center; padding: 0 20px; max-width: 860px; pointer-events: auto; }
     
     .tricolor-bar { display: flex; height: 5px; width: 340px; margin: 0 auto 28px; border-radius: 4px; overflow: hidden; }
     .tricolor-bar span { flex: 1; }
@@ -58,13 +58,10 @@
       color: #1a0535;
       text-shadow: 0 4px 15px rgba(0,0,0,0.1);
       line-height: 1.4;
-      animation: titleBounce 2.2s ease-in-out infinite;
       margin-bottom: 10px;
     }
-    @keyframes titleBounce { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-10px); } }
 
-    .title-flag { display: inline-block; animation: flagSpin 3s ease-in-out infinite; transform-origin: 80% 50%; }
-    @keyframes flagSpin { 0%, 100% { transform: rotate(-4deg); } 50% { transform: rotate(4deg); } }
+    .title-flag { display: inline-block; }
 
     .title-sub { font-family: 'Outfit', sans-serif; font-size: clamp(14px, 2vw, 20px); color: #4a4a6a; margin: 14px 0 30px; font-weight: 700; text-shadow: 0 2px 5px rgba(0,0,0,0.05); line-height: 1.5; }
     
@@ -80,9 +77,9 @@
     #start-btn {
       font-family: 'Press Start 2P', monospace; font-size: clamp(11px, 2vw, 15px); color: #1a0535;
       background: linear-gradient(135deg, #FF9933 0%, #FFB703 50%, #FF9933 100%); border: none; padding: 18px 40px; border-radius: 50px; cursor: pointer; letter-spacing: 1px;
-      box-shadow: 0 6px 0 #8B4513, 0 0 30px rgba(255,153,51,0.5); transition: transform 0.12s, box-shadow 0.12s; animation: btnPulse 1.8s ease-in-out infinite; display: inline-block;
+      box-shadow: 0 6px 0 #8B4513, 0 0 30px rgba(255,153,51,0.5); transition: transform 0.12s, box-shadow 0.12s; display: inline-block;
     }
-    @keyframes btnPulse { 0%, 100% { transform: scale(1); box-shadow: 0 6px 0 #8B4513, 0 0 30px rgba(255,153,51,0.5); } 50% { transform: scale(1.04); box-shadow: 0 6px 0 #8B4513, 0 0 55px rgba(255,183,3,0.8); } }
+    #start-btn:hover { background: #FF9933; transform: translateY(-2px); box-shadow: 0 8px 0 #8B4513, 0 10px 20px rgba(255,153,51,0.4); }
     #start-btn:active { transform: translateY(5px) scale(0.97); box-shadow: 0 1px 0 #8B4513, 0 0 20px rgba(255,153,51,0.4); }
 
     .title-credits { margin-top: 22px; font-family: 'Outfit', sans-serif; font-size: 11px; font-weight: 600; color: rgba(0,0,0,0.6); line-height: 1.8; }
@@ -314,11 +311,65 @@
     }
     #crosshair::before { width: 2px; height: 100%; left: 50%; transform: translateX(-50%); }
     #crosshair::after { width: 100%; height: 2px; top: 50%; transform: translateY(-50%); }
+
+    /* ═══════════════════════════════════════════════════════════════════════════
+       DUAL-STATE: CINEMATIC MODE UI OVERRIDES
+    ════════════════════════════════════════════════════════════════════════════ */
+    body.cinematic-mode #hud-banner,
+    body.cinematic-mode .top-left-panel,
+    body.cinematic-mode .bottom-right-panel,
+    body.cinematic-mode .bottom-center-wrapper,
+    body.cinematic-mode #crosshair {
+      display: none !important;
+    }
+
+    #perf-monitor {
+      position: fixed;
+      top: 24px;
+      left: 24px;
+      width: 280px;
+      background: rgba(10, 15, 20, 0.85);
+      border: 1px solid rgba(255,255,255,0.1);
+      border-radius: 8px;
+      padding: 16px;
+      font-family: 'Outfit', sans-serif;
+      z-index: 1000;
+      color: #fff;
+      display: none;
+      backdrop-filter: blur(8px);
+      box-shadow: 0 8px 32px rgba(0,0,0,0.4);
+    }
+    body.cinematic-mode #perf-monitor {
+      display: block;
+    }
+    .perf-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; font-size: 13px; font-weight: 700; color: #a0a0b0; }
+    .perf-header .status-indicator { display: flex; align-items: center; gap: 6px; }
+    .perf-header .status-dot { width: 8px; height: 8px; background: #00ff88; border-radius: 50%; box-shadow: 0 0 8px #00ff88; animation: blink 2s infinite; }
+    .perf-row { display: flex; justify-content: space-between; margin-bottom: 8px; font-size: 12px; font-family: 'Press Start 2P', monospace; transform: scale(0.85); transform-origin: left; }
+    .perf-row .val { color: #8ECAE6; }
+    .perf-chart { height: 40px; margin-top: 14px; background: rgba(0,0,0,0.5); border-radius: 4px; position: relative; overflow: hidden; border: 1px solid rgba(255,255,255,0.05); }
+    .perf-chart-bar { position: absolute; bottom: 0; width: 4px; background: #00ff88; transition: height 0.1s; }
+    @keyframes blink { 0%, 100% { opacity: 1; } 50% { opacity: 0.4; } }
   </style>
 </head>
-<body>
+<body class="cinematic-mode">
   <!-- ── Game canvas ──────────────────────────────────────────────────────── -->
   <canvas id="game-canvas" aria-label="The Great Desi Odyssey game canvas"></canvas>
+
+  <!-- ── WebGL Performance Monitor (Cinematic Mode) ───────────────────────── -->
+  <div id="perf-monitor" aria-hidden="true">
+    <div class="perf-header">
+      <span>WEBGL CINEMATIC OVERVIEW</span>
+      <div class="status-indicator">
+        <span>ONLINE</span><div class="status-dot"></div>
+      </div>
+    </div>
+    <div class="perf-row"><span>SCENE</span><span class="val">DIORAMA_HQ</span></div>
+    <div class="perf-row"><span>RENDERER</span><span class="val">EFFECT_COMPOSER</span></div>
+    <div class="perf-row"><span>FPS</span><span class="val" id="perf-fps">60.0</span></div>
+    <div class="perf-row"><span>INSTANCES</span><span class="val" id="perf-drawcalls">2,480</span></div>
+    <div class="perf-chart" id="perf-chart-container"></div>
+  </div>
 
   <!-- ── Cloud wipe overlay ──────────────────────────────────────────────── -->
   <div id="cloud-overlay" aria-hidden="true">
@@ -348,13 +399,7 @@
       </div>
 
       <button id="start-btn" aria-label="Start the game">▶ START YATRA (SHURU KAREIN)</button>
-      <p class="title-credits">Kerala 🌴 · Karnataka 🛕 · Maharashtra 🚂 · Mumbai 🌊<br />Built with Three.js &amp; Vite</p>
-      
-      <div style="margin-top: 15px;">
-        <a href="https://buymeacoffee.com/aayushraj1q" target="_blank">
-          <img src="https://cdn.buymeacoffee.com/buttons/v2/default-yellow.png" alt="Buy Me A Coffee" style="height: 40px !important;width: 145px !important;" >
-        </a>
-      </div>
+      <p class="title-credits">Built by Pixellon</p>
     </div>
   </div>
 
@@ -380,10 +425,11 @@
     <div class="ctrl-row"><span>W A S D</span> Move</div>
     <div class="ctrl-row"><span>Mouse</span> Look</div>
     <div class="ctrl-row"><span>M</span> Aerial Map</div>
-    <div class="ctrl-row"><span>T</span> Fast Travel</div>
+    <div class="ctrl-row"><span>R</span> 🚂 Board Train</div>
+    <button id="exit-btn" style="margin-top: 10px; font-family: 'Press Start 2P', monospace; font-size: 8px; color: #fff; background: #e53935; border: 1px solid #b71c1c; padding: 8px; border-radius: 4px; cursor: pointer; text-align: center;">EXIT YATRA</button>
   </div>
 
-  <!-- Bottom Center: Boat, Buffs & Hotbar -->
+  <!-- Bottom Center: Buffs, Boat, Hotbar -->
   <div class="bottom-center-wrapper">
     <!-- Boat state -->
     <div id="boat-label" role="status">
