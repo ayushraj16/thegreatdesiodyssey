@@ -128,4 +128,12 @@ Before submitting a Pull Request, please ensure you have completed the following
 - [ ] **Zero Placeholders**: Ensure you haven't left any `// TODO: add voxels here` comments in production files.
 - [ ] **Formatting**: Ensure your code matches the existing style (2-space indents, vanilla ES Modules).
 
-We can't wait to see what you build! Jai Hind! 🇮🇳
+We can't wait to see what you build! Be Creative! 🇮🇳
+
+---
+
+<div align="center">
+  <a href="https://buymeacoffee.com/aayushraj1q" target="_blank">
+    <img src="https://cdn.buymeacoffee.com/buttons/v2/default-yellow.png" alt="Buy Me A Coffee" style="height: 40px !important;width: 145px !important;" >
+  </a>
+</div>

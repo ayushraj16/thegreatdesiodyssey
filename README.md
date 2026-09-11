@@ -9,8 +9,10 @@
   [![License](https://img.shields.io/badge/license-Custom-blue.svg)](#license--ip-notice)
   [![Vite](https://img.shields.io/badge/vite-%5E5.4.0-646CFF?logo=vite&logoColor=white)](#)
   [![Three.js](https://img.shields.io/badge/three.js-r170-black?logo=three.js&logoColor=white)](#)
+  [![Discord](https://img.shields.io/discord/1234567890?color=5865F2&label=Discord&logo=discord&logoColor=white)](https://discord.gg/wCgUdZppd)
+  <a href="https://buymeacoffee.com/aayushraj1q" target="_blank"><img src="https://cdn.buymeacoffee.com/buttons/v2/default-yellow.png" alt="Buy Me A Coffee" style="height: 28px !important;width: 100px !important;" ></a>
 
-  [**▶ Play the Live Demo**](#) *(Link coming soon)*
+  [**▶ Play the Live Demo**](#) *(Link coming soon)*  |  [**💬 Join our Discord Community**](https://discord.gg/wCgUdZppd)
 </div>
 
 ---
@@ -114,6 +116,14 @@ Upload the resulting `dist/` folder to your hosting provider.
 *   **Multiplayer**: WebSockets integration to see other players' avatars exploring the map.
 *   **Audio**: Chiptune-style regional background music and 8-bit sound effects (e.g., train horns, item pickup chimes).
 *   **Meme Unlocks**: Collect rare items to unlock avatar skins (e.g., "Bhupendra Jogi" shades or a "Gamcha" cape).
+
+---
+
+## 💬 Community
+
+We’d love to have you in our community! Come hang out, share your voxel creations, report bugs, or just share your favorite desi memes with us.
+
+[**Join our Discord Server**](https://discord.gg/wCgUdZppd) 🚀
 
 ---
 
