@@ -39,27 +39,7 @@
       align-items: center;
       justify-content: center;
       overflow: hidden;
-      background: radial-gradient(ellipse at 60% 20%, #ff6b00 0%, #1a0535 45%, #050210 100%);
-    }
-
-    #title-screen::before {
-      content: '';
-      position: absolute;
-      inset: 0;
-      background:
-        repeating-linear-gradient(60deg, transparent, transparent 60px, rgba(255,153,51,0.04) 60px, rgba(255,153,51,0.04) 62px),
-        repeating-linear-gradient(-60deg, transparent, transparent 60px, rgba(255,183,3,0.04) 60px, rgba(255,183,3,0.04) 62px);
-      pointer-events: none;
-    }
-    #title-screen::after {
-      content: '';
-      position: absolute;
-      inset: 0;
-      background:
-        radial-gradient(circle at 15% 85%, rgba(255,153,51,0.12) 0%, transparent 30%),
-        radial-gradient(circle at 85% 15%, rgba(142,202,230,0.10) 0%, transparent 25%),
-        radial-gradient(circle at 50% 50%, rgba(255,183,3,0.06) 0%, transparent 50%);
-      pointer-events: none;
+      background: #fdfcf9 url('/content/images/bg_neural_india.jpg') center/cover no-repeat;
     }
 
     .title-content { position: relative; z-index: 2; text-align: center; padding: 0 20px; max-width: 860px; }
@@ -71,10 +51,12 @@
     .tc-green    { background: #138808; }
 
     .title-main {
-      font-family: 'Press Start 2P', monospace;
-      font-size: clamp(18px, 4vw, 36px);
-      color: #FFD700;
-      text-shadow: 4px 4px 0px #2b1704, 0 0 40px rgba(255,183,3,0.6), 0 0 80px rgba(255,153,51,0.3);
+      font-family: 'Outfit', sans-serif;
+      font-weight: 900;
+      font-size: clamp(24px, 5vw, 48px);
+      letter-spacing: 2px;
+      color: #1a0535;
+      text-shadow: 0 4px 15px rgba(0,0,0,0.1);
       line-height: 1.4;
       animation: titleBounce 2.2s ease-in-out infinite;
       margin-bottom: 10px;
@@ -84,7 +66,7 @@
     .title-flag { display: inline-block; animation: flagSpin 3s ease-in-out infinite; transform-origin: 80% 50%; }
     @keyframes flagSpin { 0%, 100% { transform: rotate(-4deg); } 50% { transform: rotate(4deg); } }
 
-    .title-sub { font-family: 'Outfit', sans-serif; font-size: clamp(13px, 2vw, 18px); color: #8ECAE6; margin: 14px 0 30px; font-weight: 600; text-shadow: 0 2px 8px rgba(0,0,0,0.6); line-height: 1.5; }
+    .title-sub { font-family: 'Outfit', sans-serif; font-size: clamp(14px, 2vw, 20px); color: #4a4a6a; margin: 14px 0 30px; font-weight: 700; text-shadow: 0 2px 5px rgba(0,0,0,0.05); line-height: 1.5; }
     
     .badge-row { display: flex; flex-wrap: wrap; justify-content: center; gap: 10px; margin-bottom: 32px; }
     .badge { font-family: 'Outfit', sans-serif; font-size: 11px; font-weight: 700; padding: 7px 14px; border-radius: 20px; border: 1px solid; letter-spacing: 0.5px; animation: badgePop 0.4s ease backwards; }
@@ -103,7 +85,7 @@
     @keyframes btnPulse { 0%, 100% { transform: scale(1); box-shadow: 0 6px 0 #8B4513, 0 0 30px rgba(255,153,51,0.5); } 50% { transform: scale(1.04); box-shadow: 0 6px 0 #8B4513, 0 0 55px rgba(255,183,3,0.8); } }
     #start-btn:active { transform: translateY(5px) scale(0.97); box-shadow: 0 1px 0 #8B4513, 0 0 20px rgba(255,153,51,0.4); }
 
-    .title-credits { margin-top: 22px; font-family: 'Outfit', sans-serif; font-size: 11px; color: rgba(255,255,255,0.38); line-height: 1.8; }
+    .title-credits { margin-top: 22px; font-family: 'Outfit', sans-serif; font-size: 11px; font-weight: 600; color: rgba(0,0,0,0.6); line-height: 1.8; }
     #title-screen.hidden { animation: titleFade 0.85s ease forwards; pointer-events: none; }
     @keyframes titleFade { to { opacity: 0; transform: scale(1.06); } }
 
@@ -421,6 +403,7 @@
     </div>
   </div>
 
+  <script data-name="BMC-Widget" data-cfasync="false" src="https://cdnjs.buymeacoffee.com/1.0.0/widget.prod.min.js" data-id="aayushraj1q" data-description="Support me on Buy me a coffee!" data-message="" data-color="#5F7FFF" data-position="Right" data-x_margin="18" data-y_margin="18"></script>
   <script type="module" src="/src/main.js"></script>
 </body>
 </html>

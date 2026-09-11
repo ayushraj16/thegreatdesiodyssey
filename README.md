@@ -11,8 +11,7 @@
   [![Three.js](https://img.shields.io/badge/three.js-r170-black?logo=three.js&logoColor=white)](#)
   [![Discord](https://img.shields.io/discord/1234567890?color=5865F2&label=Discord&logo=discord&logoColor=white)](https://discord.gg/wCgUdZppd)
   <a href="https://buymeacoffee.com/aayushraj1q" target="_blank"><img src="https://cdn.buymeacoffee.com/buttons/v2/default-yellow.png" alt="Buy Me A Coffee" style="height: 28px !important;width: 100px !important;" ></a>
-
-  [**▶ Play the Live Demo**](#) *(Link coming soon)*  |  [**💬 Join our Discord Community**](https://discord.gg/wCgUdZppd)
+  [**▶ Play the Live Demo**](https://desiodyssey.pixellon.in)  |  [**💬 Join our Discord Community**](https://discord.gg/wCgUdZppd)
 </div>
 
 ---
