@@ -38,7 +38,8 @@ renderer.toneMapping       = THREE.ACESFilmicToneMapping;
 renderer.toneMappingExposure = 1.05;
 
 const scene  = new THREE.Scene();
-scene.fog    = new THREE.FogExp2('#81d4fa', 0.008);
+scene.background = new THREE.Color('#FAF8F0'); // Cream background
+scene.fog    = new THREE.FogExp2('#FAF8F0', 0.008); // Match fog to cream background
 
 const camera = new THREE.PerspectiveCamera(65, window.innerWidth / window.innerHeight, 0.1, 250);
 
@@ -440,8 +441,8 @@ function animate() {
     proceduralMap.update(delta);
     
     // Isometric camera view looking down at the map (which is at y=2000)
-    camera.position.set(0, 2040, 60);
-    camera.lookAt(0, 2000, 0);
+    camera.position.set(-25, 2040, 60);
+    camera.lookAt(-25, 2000, 0);
     
     const fpsEl = document.getElementById('perf-fps');
     if (fpsEl) fpsEl.textContent = (1 / delta).toFixed(1);

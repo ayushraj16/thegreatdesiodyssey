@@ -22,77 +22,127 @@ export class ProceduralMap {
     const dummy = new THREE.Object3D();
     const color = new THREE.Color();
 
-    let count = 0;
-    const width = 60;
-    const height = 70;
+    const INDIA_MAP = [
+      "                      HHH                         ",
+      "                     HHHHH                        ",
+      "                    HHHHHHH                       ",
+      "                    HHHHHHH                       ",
+      "                   HHHHHHHHH                      ",
+      "                  HHHHHHHHHHH                     ",
+      "                  HHHHHHHHHHH                     ",
+      "                 HHHHHHHHHHHHH                    ",
+      "                HHHHHHHHHHHHHHH                   ",
+      "               HHHHHHHHHHHHHHHHHH                 ",
+      "               HHHHHHHHHHHHHHHHHHH                ",
+      "             DDDHHHHPPPPPPPHHHHHHHH               ",
+      "            DDDDDDPPPPPPPPPPHHHHHHHH              ",
+      "           DDDDDDDPPPPPPPPPPPPHHHHHHH    NNNN     ",
+      "          DDDDDDDDPPPPPPPPPPPPPHHHHHHH  NNNNNN    ",
+      "         DDDDDDDDDPPPPPPPPPPPPPPHHHHHHHHNNNNNNN   ",
+      "        DDDDDDDDDDPPPPPPPPPPPPPPPPHHHHHHNNNNNNNN  ",
+      "       DDDDDDDDDDDPPPPPPPPPPPPPPPPPPHHHNNNNNNNNN  ",
+      "      DDDDDDDDDDDDPPPPPPPPPPPPPPPPPPPPNNNNNNNNNN  ",
+      "     DDDDDDDDDDDDDPPPPPPPPPPPPPPPPPPPPPNNNNNNNN   ",
+      "    DDDDDDDDDDDDDDPPPPPPPPPPPPPPPPPPPPP NNNNN     ",
+      "   DDDDDDDDDDDDDPPPPPPPPPPPPPPPPPPPPPPP           ",
+      "   DDDDDDDDDDDPPPPPPPPPPPPPPPPPPPPPPPP            ",
+      "    DDDDDDDPPPPPPPPPPPPPPPPPPPPPPPPPPP            ",
+      "      DDPPPPPPPPPPPPPPPPPPPPPPPPPPPPP             ",
+      "        PPPPPPPPPPPPPPPPPPPPPPPPPPPP              ",
+      "         PPPPPPPPPPPPPPPPPPPPPPPPPP               ",
+      "          PPPPPPPPPPPPPPPPPPPPPPPP                ",
+      "          PPPPPPPPPPPPPPPPPPPPPPP                 ",
+      "           PPPPPPPPPPPPPPPPPPPPPP                 ",
+      "           PPPPPPPPPPPPPPPPPPPPP                  ",
+      "            PPPPPPPPPPPPPPPPPPPP                  ",
+      "            PPPPPPPPPPPPPPPPPPP                   ",
+      "             PPPPPPPPPPPPPPPPP                    ",
+      "             PPPPPPPPPPPPPPPP                     ",
+      "              PPPPPPPPPPPPPP                      ",
+      "              PPPPPPPPPPPPP                       ",
+      "               PPPPPPPPPPPP                       ",
+      "               PPPPPPPPPPP                        ",
+      "                PPPPPPPPP                         ",
+      "                PPPPPPPP                          ",
+      "                 PPPPPP                           ",
+      "                 PPPPP                            ",
+      "                  PPP                             ",
+      "                  PPP                             ",
+      "                   P                              "
+    ];
 
-    for (let x = -width / 2; x < width / 2; x++) {
-      for (let z = -height / 2; z < height / 2; z++) {
+    let count = 0;
+    const rows = INDIA_MAP.length;
+    const cols = INDIA_MAP[0].length;
+    
+    // Center offset
+    const offsetX = cols / 2;
+    const offsetZ = rows / 2;
+
+    for (let z = 0; z < rows; z++) {
+      for (let x = 0; x < cols; x++) {
         if (count >= maxInstances) break;
 
-        // Normalized coordinates
-        const nx = x / (width / 2);
-        const nz = z / (height / 2);
+        const char = INDIA_MAP[z][x];
+        if (char === ' ') continue;
 
-        // Approximate India shape (inverted triangle / diamond)
-        let mask = false;
-        if (nz > 0) {
-          // South (tapering)
-          if (Math.abs(nx) < (1.0 - nz) * 0.75) mask = true;
-        } else {
-          // North (wider top)
-          if (Math.abs(nx) < (1.0 + nz * 1.2) * 0.85) mask = true;
+        // Skip some voxels for texture
+        if (Math.random() < 0.1) continue;
+
+        let h = 1;
+        let hexColor = 0xffffff;
+
+        switch(char) {
+          case 'H': // Himalayas
+            h = Math.floor(Math.random() * 4) + 3;
+            hexColor = Math.random() > 0.5 ? 0xffffff : 0xdddddd;
+            break;
+          case 'D': // Desert
+            h = Math.floor(Math.random() * 2) + 1;
+            hexColor = Math.random() > 0.5 ? 0xf57c00 : 0xffb74d;
+            break;
+          case 'P': // Peninsula / Central
+            h = Math.floor(Math.random() * 3) + 1;
+            // Add regional variation
+            if (x < cols/2 && z > rows/2) {
+               hexColor = Math.random() > 0.5 ? 0x2e7d32 : 0x4caf50; // Western Ghats / Kerala
+            } else if (z < rows/2) {
+               hexColor = Math.random() > 0.5 ? 0xffa726 : 0x8d6e63; // Central India
+            } else {
+               hexColor = Math.random() > 0.5 ? 0x66bb6a : 0x8d6e63; // East coast / Deccan
+            }
+            break;
+          case 'N': // Northeast
+            h = Math.floor(Math.random() * 3) + 2;
+            hexColor = Math.random() > 0.5 ? 0x388e3c : 0x1b5e20;
+            break;
         }
 
-        if (mask && Math.random() > 0.15) {
-          // Determine height and color based on region
-          let h = 1;
-          let hexColor = 0xffffff;
-
-          if (nz < -0.4) {
-            // North (Himalayas)
-            h = Math.floor(Math.random() * 4) + 3; // Tall
-            hexColor = Math.random() > 0.5 ? 0xffffff : 0xdddddd;
-          } else if (nz > 0.3) {
-            // South (Peninsula tip)
-            h = Math.floor(Math.random() * 2) + 1; // Low
-            hexColor = Math.random() > 0.5 ? 0x2e7d32 : 0x4caf50; // Lush greens
-          } else {
-            // Central
-            h = Math.floor(Math.random() * 3) + 1; // Medium
-            if (nx < -0.2) {
-              hexColor = 0xf57c00; // West/Saffron
-            } else if (nx > 0.2) {
-              hexColor = 0x8d6e63; // East/Brown
-            } else {
-              hexColor = 0xffa726; // Central/Orange
-            }
-          }
-
-          // Coastal edges (blue)
-          const edgeDist = Math.abs(nx) / (nz > 0 ? (1.0 - nz) * 0.75 : (1.0 + nz * 1.2) * 0.85);
-          if (edgeDist > 0.8 && Math.random() > 0.5) {
+        // Add edge water rarely
+        if (Math.random() < 0.05 && char !== 'H') {
             h = 1;
             hexColor = 0x81d4fa;
-          }
+        }
 
-          // Stack voxels up to height
-          for (let y = 0; y < h; y++) {
-            if (count >= maxInstances) break;
-            
-            dummy.position.set(x, y, z);
-            dummy.scale.set(0.95, 0.95, 0.95);
-            dummy.updateMatrix();
-            
-            this.mapMesh.setMatrixAt(count, dummy.matrix);
-            color.setHex(hexColor);
-            
-            // Add slight random color variation
-            color.offsetHSL(0, 0, (Math.random() - 0.5) * 0.05);
-            this.mapMesh.setColorAt(count, color);
-            
-            count++;
-          }
+        const worldX = x - offsetX;
+        const worldZ = z - offsetZ;
+
+        // Stack voxels up to height
+        for (let y = 0; y < h; y++) {
+          if (count >= maxInstances) break;
+          
+          dummy.position.set(worldX, y, worldZ);
+          dummy.scale.set(0.95, 0.95, 0.95);
+          dummy.updateMatrix();
+          
+          this.mapMesh.setMatrixAt(count, dummy.matrix);
+          color.setHex(hexColor);
+          
+          // Add slight random color variation
+          color.offsetHSL(0, 0, (Math.random() - 0.5) * 0.05);
+          this.mapMesh.setColorAt(count, color);
+          
+          count++;
         }
       }
     }
@@ -104,9 +154,14 @@ export class ProceduralMap {
   }
 
   createParticles() {
-    const particleCount = 500;
-    const geometry = new THREE.BoxGeometry(0.5, 0.5, 0.5);
-    const material = new THREE.MeshLambertMaterial({ color: 0xffffff });
+    const particleCount = 150; // Reduced count for a cleaner look
+    const geometry = new THREE.BoxGeometry(0.6, 0.6, 0.6);
+    // Subtle, elegant colors for the cream background
+    const material = new THREE.MeshLambertMaterial({ 
+      color: 0xffffff,
+      transparent: true,
+      opacity: 0.6 
+    });
     
     this.particles = new THREE.InstancedMesh(geometry, material, particleCount);
     
@@ -114,14 +169,15 @@ export class ProceduralMap {
     const dummy = new THREE.Object3D();
     const color = new THREE.Color();
     
-    const colors = [0xff4081, 0xffd54f, 0x4fc3f7, 0x795548]; // pink, yellow, blue, brown
+    // Soft golds, warm whites, and light terracotta
+    const colors = [0xffd700, 0xffffff, 0xffe0b2, 0xffab91]; 
     
     for (let i = 0; i < particleCount; i++) {
-      const radius = 25 + Math.random() * 50;
+      const radius = 30 + Math.random() * 40;
       const angle = Math.random() * Math.PI * 2;
-      const y = (Math.random() - 0.5) * 40;
-      const speed = (Math.random() * 0.005 + 0.001) * (Math.random() > 0.5 ? 1 : -1);
-      const floatSpeed = Math.random() * 0.02 + 0.01;
+      const y = (Math.random() - 0.5) * 50;
+      const speed = (Math.random() * 0.002 + 0.001) * (Math.random() > 0.5 ? 1 : -1);
+      const floatSpeed = Math.random() * 0.01 + 0.005;
       
       this.particleData.push({ radius, angle, y, speed, floatSpeed });
       
@@ -142,25 +198,25 @@ export class ProceduralMap {
   update(delta) {
     // Slow auto-rotation of the entire diorama
     this.group.rotation.y += 0.002;
-    
-    // Animate particles (drift upward and orbit)
-    const dummy = new THREE.Object3D();
-    for (let i = 0; i < this.particleData.length; i++) {
-      const data = this.particleData[i];
-      data.angle += data.speed;
-      data.y += data.floatSpeed;
-      
-      // Reset if too high
-      if (data.y > 30) data.y = -30;
-      
-      dummy.position.set(Math.cos(data.angle) * data.radius, data.y, Math.sin(data.angle) * data.radius);
-      dummy.rotation.x += 0.01;
-      dummy.rotation.y += 0.02;
-      dummy.updateMatrix();
-      
-      this.particles.setMatrixAt(i, dummy.matrix);
+
+    if (this.particles) {
+      const dummy = new THREE.Object3D();
+      for (let i = 0; i < this.particleData.length; i++) {
+        const data = this.particleData[i];
+        data.angle += data.speed;
+        data.y += data.floatSpeed;
+        
+        if (data.y > 35) data.y = -35;
+        
+        dummy.position.set(Math.cos(data.angle) * data.radius, data.y, Math.sin(data.angle) * data.radius);
+        dummy.rotation.x += 0.01;
+        dummy.rotation.y += 0.02;
+        dummy.updateMatrix();
+        
+        this.particles.setMatrixAt(i, dummy.matrix);
+      }
+      this.particles.instanceMatrix.needsUpdate = true;
     }
-    this.particles.instanceMatrix.needsUpdate = true;
   }
 
   setVisible(visible) {
