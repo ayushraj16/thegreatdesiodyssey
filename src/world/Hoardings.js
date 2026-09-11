@@ -130,8 +130,8 @@ export class Hoardings {
       ['BHARAT CENTRAL', 'PLATFORM NO. 1', '🇮🇳 The Great Desi Odyssey 🇮🇳'],
       { border: '#FF9933', headline: '#FF9933' });
 
-    // Maharashtra border (east)
-    createHoarding(s, 32, 0, 0, -Math.PI / 2,
+    // Maharashtra border (east) — placed beside train tracks, facing the platform
+    createHoarding(s, 14, 0, -5, -Math.PI * 0.55,
       ['WELCOME TO MAHARASHTRA', 'Aamchi Mumbai • Pune • Nagpur', '🚂 Local train stops here'],
       { bg: '#0d1f0d', border: '#FF6600', headline: '#FF6600', body: '#ccffcc' });
 

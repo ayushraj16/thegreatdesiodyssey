@@ -101,11 +101,9 @@ function buildPuneDistrict(scene, stateManager) {
   g.position.set(38, 0.5, -2);
   scene.add(g);
 
-  // Ground patch
-  const gnd = new THREE.Mesh(new THREE.PlaneGeometry(32, 18),
-    new THREE.MeshLambertMaterial({ color: '#9e8c7a' }));
-  gnd.rotation.x = -Math.PI / 2;
-  gnd.position.set(38, -0.48, -2);
+  const gnd = new THREE.Mesh(new THREE.BoxGeometry(32, 0.04, 18),
+    new THREE.MeshLambertMaterial({ color: '#9e8c7a', polygonOffset: true, polygonOffsetFactor: -1, polygonOffsetUnits: -1 }));
+  gnd.position.set(38, 0.01, -2);
   gnd.receiveShadow = true;
   scene.add(gnd);
 
@@ -186,10 +184,9 @@ function buildNagpurDistrict(scene, stateManager) {
   g.position.set(52, 0.5, -12);
   scene.add(g);
 
-  const gnd = new THREE.Mesh(new THREE.PlaneGeometry(28, 22),
-    new THREE.MeshLambertMaterial({ color: '#c8b888' }));
-  gnd.rotation.x = -Math.PI / 2;
-  gnd.position.set(52, -0.48, -12);
+  const gnd = new THREE.Mesh(new THREE.BoxGeometry(28, 0.04, 22),
+    new THREE.MeshLambertMaterial({ color: '#c8b888', polygonOffset: true, polygonOffsetFactor: -1, polygonOffsetUnits: -1 }));
+  gnd.position.set(52, 0.01, -12);
   scene.add(gnd);
 
   // ── Collectible: Nagpur Orange ──────────────────────────────────────────
@@ -263,10 +260,9 @@ function buildRaigadDistrict(scene, stateManager) {
   g.position.set(28, 0, 18);
   scene.add(g);
 
-  const gnd = new THREE.Mesh(new THREE.PlaneGeometry(30, 30),
-    new THREE.MeshLambertMaterial({ color: '#6b7c52' }));
-  gnd.rotation.x = -Math.PI / 2;
-  gnd.position.set(28, -0.48, 18);
+  const gnd = new THREE.Mesh(new THREE.BoxGeometry(30, 0.04, 30),
+    new THREE.MeshLambertMaterial({ color: '#6b7c52', polygonOffset: true, polygonOffsetFactor: -1, polygonOffsetUnits: -1 }));
+  gnd.position.set(28, 0.01, 18);
   scene.add(gnd);
 }
 
@@ -332,10 +328,9 @@ function buildNashikDistrict(scene, stateManager) {
   g.position.set(42, 0.5, -18);
   scene.add(g);
 
-  const gnd = new THREE.Mesh(new THREE.PlaneGeometry(26, 20),
-    new THREE.MeshLambertMaterial({ color: '#4a6c3a' }));
-  gnd.rotation.x = -Math.PI / 2;
-  gnd.position.set(42, -0.48, -18);
+  const gnd = new THREE.Mesh(new THREE.BoxGeometry(26, 0.04, 20),
+    new THREE.MeshLambertMaterial({ color: '#4a6c3a', polygonOffset: true, polygonOffsetFactor: -1, polygonOffsetUnits: -1 }));
+  gnd.position.set(42, 0.01, -18);
   scene.add(gnd);
 
   // ── Collectible: Grape Punch ─────────────────────────────────────────────

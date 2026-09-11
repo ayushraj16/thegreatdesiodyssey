@@ -18,6 +18,7 @@ import { TravelModal }          from './ui/TravelModal.js';
 import { IndiaMapModal }        from './ui/IndiaMapModal.js';
 import { LandingScreen }        from './ui/LandingScreen.js';
 import { ProceduralMap }        from './world/ProceduralMap.js';
+import { DistantCity }          from './world/DistantCity.js';
 
 import { EffectComposer }       from 'three/examples/jsm/postprocessing/EffectComposer.js';
 import { RenderPass }           from 'three/examples/jsm/postprocessing/RenderPass.js';
@@ -29,7 +30,7 @@ let gameState = 'CINEMATIC'; // 'CINEMATIC' or 'PLAYING'
 // Renderer
 // ─────────────────────────────────────────────────────────────────────────────
 const canvas = document.getElementById('game-canvas');
-const renderer = new THREE.WebGLRenderer({ canvas, antialias: true });
+const renderer = new THREE.WebGLRenderer({ canvas, antialias: true, logarithmicDepthBuffer: true });
 renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
 renderer.setSize(window.innerWidth, window.innerHeight);
 renderer.shadowMap.enabled = true;
@@ -39,9 +40,9 @@ renderer.toneMappingExposure = 1.05;
 
 const scene  = new THREE.Scene();
 scene.background = new THREE.Color('#FAF8F0'); // Cream background
-scene.fog    = new THREE.FogExp2('#FAF8F0', 0.008); // Match fog to cream background
+scene.fog    = new THREE.FogExp2('#FAF8F0', 0.005); // Slightly looser fog so distant city is visible
 
-const camera = new THREE.PerspectiveCamera(65, window.innerWidth / window.innerHeight, 0.1, 250);
+const camera = new THREE.PerspectiveCamera(65, window.innerWidth / window.innerHeight, 0.1, 600);
 
 // ─────────────────────────────────────────────────────────────────────────────
 // Lighting
@@ -78,7 +79,7 @@ const groundMat = new THREE.MeshStandardMaterial({
 groundMat.onBeforeCompile = (shader) => {
   shader.uniforms.uTime = uniforms.uTime;
   
-  // Vertex Shader: Add wind displacement
+  // Vertex Shader: Pass world position for fragment shader wind effects
   shader.vertexShader = `
     uniform float uTime;
     varying vec3 vWorldPos;
@@ -89,12 +90,6 @@ groundMat.onBeforeCompile = (shader) => {
     
     vec4 worldPosition = modelMatrix * vec4(position, 1.0);
     vWorldPos = worldPosition.xyz;
-    
-    // Wind displacement based on sine waves
-    float wind = sin(worldPosition.x * 0.1 + uTime * 1.5) * 
-                 cos(worldPosition.z * 0.1 + uTime * 1.2);
-                 
-    transformed.z += wind * 0.8; // Z is UP in PlaneGeometry before rotation
     `
   );
 
@@ -328,6 +323,7 @@ const karDistricts  = new KarnatakaDistricts(scene);
 const kerDistricts  = new KeralaDistricts(scene, { registerCollectible: () => {} });
 const hoardings     = new Hoardings(scene);
 const waterBodies   = new WaterBodies(scene);
+const distantCity   = new DistantCity(scene);
 
 landmarks.init();
 mahDistricts.init();
@@ -335,6 +331,7 @@ karDistricts.init();
 kerDistricts.init();
 hoardings.init();
 waterBodies.init();
+distantCity.init();
 
 // ─────────────────────────────────────────────────────────────────────────────
 // Collectible Manager (state-restricted, dynamic respawn)
@@ -457,6 +454,7 @@ function animate() {
 
     environment.update(elapsed, delta);
     train.update(delta, player.position);
+    distantCity.update(elapsed);
     collectibleMgr.update(delta, elapsed, player.position, player);
     updateHUD(elapsed);
     clearEdge();

@@ -144,10 +144,9 @@ function buildKochiDistrict(scene, stateManager) {
   g.position.set(-28, 0, 4);
   scene.add(g);
 
-  const gnd = new THREE.Mesh(new THREE.PlaneGeometry(36, 22),
-    new THREE.MeshLambertMaterial({ color: '#c8b888' }));
-  gnd.rotation.x = -Math.PI / 2;
-  gnd.position.set(-28, -0.48, 4);
+  const gnd = new THREE.Mesh(new THREE.BoxGeometry(36, 0.04, 22),
+    new THREE.MeshLambertMaterial({ color: '#c8b888', polygonOffset: true, polygonOffsetFactor: -1, polygonOffsetUnits: -1 }));
+  gnd.position.set(-28, 0.01, 4);
   scene.add(gnd);
 
   // ── Collectible: Kerala Pepper ───────────────────────────────────────────
@@ -236,10 +235,9 @@ function buildAlappuzhaDistrict(scene, stateManager) {
   g.position.set(-46, 0.5, 12);
   scene.add(g);
 
-  const gnd = new THREE.Mesh(new THREE.PlaneGeometry(30, 22),
-    new THREE.MeshLambertMaterial({ color: '#4a7c3a' }));
-  gnd.rotation.x = -Math.PI / 2;
-  gnd.position.set(-46, -0.48, 12);
+  const gnd = new THREE.Mesh(new THREE.BoxGeometry(30, 0.04, 22),
+    new THREE.MeshLambertMaterial({ color: '#4a7c3a', polygonOffset: true, polygonOffsetFactor: -1, polygonOffsetUnits: -1 }));
+  gnd.position.set(-46, 0.01, 12);
   scene.add(gnd);
 
   // ── Collectible: Kerala Porotta & Roast ─────────────────────────────────
@@ -313,10 +311,9 @@ function buildMunnarDistrict(scene, stateManager) {
   g.position.set(-40, 0, -14);
   scene.add(g);
 
-  const gnd = new THREE.Mesh(new THREE.PlaneGeometry(32, 26),
-    new THREE.MeshLambertMaterial({ color: '#3a7a28' }));
-  gnd.rotation.x = -Math.PI / 2;
-  gnd.position.set(-40, -0.48, -14);
+  const gnd = new THREE.Mesh(new THREE.BoxGeometry(32, 0.04, 26),
+    new THREE.MeshLambertMaterial({ color: '#3a7a28', polygonOffset: true, polygonOffsetFactor: -1, polygonOffsetUnits: -1 }));
+  gnd.position.set(-40, 0.01, -14);
   scene.add(gnd);
 
   // ── Collectible: Munnar Tea Cup ──────────────────────────────────────────
@@ -418,10 +415,9 @@ function buildThiruDistrict(scene, stateManager) {
   g.position.set(-56, 0, 5);
   scene.add(g);
 
-  const gnd = new THREE.Mesh(new THREE.PlaneGeometry(32, 26),
-    new THREE.MeshLambertMaterial({ color: '#c8b888' }));
-  gnd.rotation.x = -Math.PI / 2;
-  gnd.position.set(-56, -0.48, 5);
+  const gnd = new THREE.Mesh(new THREE.BoxGeometry(32, 0.04, 26),
+    new THREE.MeshLambertMaterial({ color: '#c8b888', polygonOffset: true, polygonOffsetFactor: -1, polygonOffsetUnits: -1 }));
+  gnd.position.set(-56, 0.01, 5);
   scene.add(gnd);
 }
 
