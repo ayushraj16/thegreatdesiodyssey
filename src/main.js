@@ -17,9 +17,7 @@ import { KeralaDistricts }      from './world/zones/KeralaDistricts.js';
 import { TravelModal }          from './ui/TravelModal.js';
 import { IndiaMapModal }        from './ui/IndiaMapModal.js';
 import { LandingScreen }        from './ui/LandingScreen.js';
-
-import { CinematicMap }         from './world/CinematicMap.js';
-import { OrbitalParticles }     from './world/OrbitalParticles.js';
+import { ProceduralMap }        from './world/ProceduralMap.js';
 
 import { EffectComposer }       from 'three/examples/jsm/postprocessing/EffectComposer.js';
 import { RenderPass }           from 'three/examples/jsm/postprocessing/RenderPass.js';
@@ -40,8 +38,7 @@ renderer.toneMapping       = THREE.ACESFilmicToneMapping;
 renderer.toneMappingExposure = 1.05;
 
 const scene  = new THREE.Scene();
-scene.background = new THREE.Color('#ffffff'); // White background
-scene.fog    = new THREE.FogExp2('#ffffff', 0.003);
+scene.fog    = new THREE.FogExp2('#81d4fa', 0.008);
 
 const camera = new THREE.PerspectiveCamera(65, window.innerWidth / window.innerHeight, 0.1, 250);
 
@@ -262,19 +259,21 @@ const hud = {
 // ─────────────────────────────────────────────────────────────────────────────
 // Cinematic Mode Assets
 // ─────────────────────────────────────────────────────────────────────────────
-const cinematicMap = new CinematicMap(scene);
-cinematicMap.group.position.y = 2000;
+const proceduralMap = new ProceduralMap(scene);
+proceduralMap.group.position.y = 2000; // Keep it high above the actual game map
 
-const orbitalParticles = new OrbitalParticles(scene);
-orbitalParticles.mesh.position.y = 2000;
-
-// Deep space cinematic lighting
-const cinematicAmbient = new THREE.AmbientLight('#201040', 2.0);
-const cinematicRim = new THREE.DirectionalLight('#00ffff', 3.0);
-cinematicRim.position.set(-50, 2020, -50);
-const cinematicRim2 = new THREE.DirectionalLight('#ff00ff', 3.0);
-cinematicRim2.position.set(50, 1980, 50);
-scene.add(cinematicAmbient, cinematicRim, cinematicRim2);
+// Deep space cinematic lighting for procedural map
+const cinematicAmbient = new THREE.AmbientLight('#ffffff', 0.6);
+const cinematicSun = new THREE.DirectionalLight('#fff6e5', 1.2);
+cinematicSun.position.set(50, 2080, 20); // Relative to group at y=2000
+cinematicSun.castShadow = true;
+cinematicSun.shadow.mapSize.width = 2048;
+cinematicSun.shadow.mapSize.height = 2048;
+cinematicSun.shadow.camera.left = -60;
+cinematicSun.shadow.camera.right = 60;
+cinematicSun.shadow.camera.top = 60;
+cinematicSun.shadow.camera.bottom = -60;
+scene.add(cinematicAmbient, cinematicSun);
 
 // Post-Processing for retro dithered effect
 const composer = new EffectComposer(renderer);
@@ -301,7 +300,7 @@ const PixelShader = {
       vec2 coord = dxy * floor(vUv / dxy);
       vec4 color = texture2D(tDiffuse, coord);
       float l = dot(color.rgb, vec3(0.299, 0.587, 0.114));
-      color.rgb = mix(vec3(l), color.rgb, 1.8);
+      color.rgb = mix(vec3(l), color.rgb, 1.3);
       gl_FragColor = color;
     }
   `
@@ -362,13 +361,8 @@ new LandingScreen(() => {
   gameState = 'PLAYING';
   document.body.classList.remove('cinematic-mode');
   
-  cinematicMap.setVisible(false);
-  orbitalParticles.setVisible(false);
-  
-  scene.remove(cinematicAmbient, cinematicRim, cinematicRim2);
-  scene.background = null; 
-  scene.fog.color.set('#81d4fa');
-  scene.fog.density = 0.008;
+  proceduralMap.setVisible(false);
+  scene.remove(cinematicAmbient, cinematicSun);
   
   player.pitch = 0.2;
 }, canvas);
@@ -443,12 +437,10 @@ function animate() {
   const elapsed = clock.elapsedTime;
 
   if (gameState === 'CINEMATIC') {
-    cinematicMap.update(elapsed);
-    orbitalParticles.update(elapsed);
+    proceduralMap.update(delta);
     
-    const radius = 90;
-    const speed = elapsed * 0.05; 
-    camera.position.set(Math.cos(speed) * radius, 2040, Math.sin(speed) * radius);
+    // Isometric camera view looking down at the map (which is at y=2000)
+    camera.position.set(0, 2040, 60);
     camera.lookAt(0, 2000, 0);
     
     const fpsEl = document.getElementById('perf-fps');

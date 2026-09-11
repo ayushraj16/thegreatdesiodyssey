@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Terms & Conditions - The Great Desi Odyssey</title>
+</head>
+<body>
+  <div class="container">
+    <a href="/" class="back-btn">&larr; Back to Game</a>
+    <div id="doc-container">Loading...</div>
+  </div>
+  <script type="module">
+    import tncMd from './T&C.md?raw';
+    import { renderDoc } from './src/ui/DocRenderer.js';
+    renderDoc('Terms & Conditions', tncMd);
+  </script>
+</body>
+</html>

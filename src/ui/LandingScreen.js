@@ -1,3 +1,4 @@
+
 /**
  * Manages the festive landing / title screen.
  * Handles dismiss + pointer lock handshake.

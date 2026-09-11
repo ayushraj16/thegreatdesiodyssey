@@ -55,15 +55,15 @@
       font-weight: 900;
       font-size: clamp(24px, 5vw, 48px);
       letter-spacing: 2px;
-      color: #1a0535;
-      text-shadow: 0 4px 15px rgba(0,0,0,0.1);
+      color: #ffffff;
+      text-shadow: 0 4px 15px rgba(0,0,0,0.8), 0 0 20px rgba(255,255,255,0.2);
       line-height: 1.4;
       margin-bottom: 10px;
     }
 
     .title-flag { display: inline-block; }
 
-    .title-sub { font-family: 'Outfit', sans-serif; font-size: clamp(14px, 2vw, 20px); color: #4a4a6a; margin: 14px 0 30px; font-weight: 700; text-shadow: 0 2px 5px rgba(0,0,0,0.05); line-height: 1.5; }
+    .title-sub { font-family: 'Outfit', sans-serif; font-size: clamp(14px, 2vw, 20px); color: #e0e0f0; margin: 14px 0 30px; font-weight: 700; text-shadow: 0 2px 10px rgba(0,0,0,0.8); line-height: 1.5; }
     
     .badge-row { display: flex; flex-wrap: wrap; justify-content: center; gap: 10px; margin-bottom: 32px; }
     .badge { font-family: 'Outfit', sans-serif; font-size: 11px; font-weight: 700; padding: 7px 14px; border-radius: 20px; border: 1px solid; letter-spacing: 0.5px; animation: badgePop 0.4s ease backwards; }
@@ -82,7 +82,7 @@
     #start-btn:hover { background: #FF9933; transform: translateY(-2px); box-shadow: 0 8px 0 #8B4513, 0 10px 20px rgba(255,153,51,0.4); }
     #start-btn:active { transform: translateY(5px) scale(0.97); box-shadow: 0 1px 0 #8B4513, 0 0 20px rgba(255,153,51,0.4); }
 
-    .title-credits { margin-top: 22px; font-family: 'Outfit', sans-serif; font-size: 11px; font-weight: 600; color: rgba(0,0,0,0.6); line-height: 1.8; }
+    .title-credits { position: absolute; bottom: 20px; left: 30px; margin: 0; font-family: 'Outfit', sans-serif; font-size: 12px; font-weight: 600; color: rgba(255,255,255,0.7); line-height: 1.8; text-shadow: 0 1px 4px rgba(0,0,0,0.8); letter-spacing: 0.5px; }
     #title-screen.hidden { animation: titleFade 0.85s ease forwards; pointer-events: none; }
     @keyframes titleFade { to { opacity: 0; transform: scale(1.06); } }
 
@@ -97,6 +97,31 @@
     #cloud-overlay.covering .c-bottom { transform: translateY(25%); }
     #cloud-overlay.clearing .c-top { transform: translateY(-115%); }
     #cloud-overlay.clearing .c-bottom { transform: translateY(115%); }
+
+    /* ═══════════════════════════════════════════════════════════════════════════
+       LANDING PAGE NAV & MODAL
+    ════════════════════════════════════════════════════════════════════════════ */
+    .landing-nav {
+      position: absolute;
+      top: 20px;
+      right: 30px;
+      z-index: 105;
+      display: flex;
+      gap: 20px;
+      pointer-events: auto;
+    }
+    .landing-nav a {
+      color: rgba(255,255,255,0.8);
+      font-family: 'Outfit', sans-serif;
+      font-weight: 600;
+      font-size: 14px;
+      text-decoration: none;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      transition: color 0.2s;
+      text-shadow: 0 2px 4px rgba(0,0,0,0.5);
+    }
+    .landing-nav a:hover { color: #FF9933; }
 
     /* ═══════════════════════════════════════════════════════════════════════════
        RE-ENGINEERED HUD LAYOUT
@@ -358,14 +383,6 @@
 
   <!-- ── WebGL Performance Monitor (Cinematic Mode) ───────────────────────── -->
   <div id="perf-monitor" aria-hidden="true">
-    <div class="perf-header">
-      <span>WEBGL CINEMATIC OVERVIEW</span>
-      <div class="status-indicator">
-        <span>ONLINE</span><div class="status-dot"></div>
-      </div>
-    </div>
-    <div class="perf-row"><span>SCENE</span><span class="val">DIORAMA_HQ</span></div>
-    <div class="perf-row"><span>RENDERER</span><span class="val">EFFECT_COMPOSER</span></div>
     <div class="perf-row"><span>FPS</span><span class="val" id="perf-fps">60.0</span></div>
     <div class="perf-row"><span>INSTANCES</span><span class="val" id="perf-drawcalls">2,480</span></div>
     <div class="perf-chart" id="perf-chart-container"></div>
@@ -381,26 +398,24 @@
        FESTIVE LANDING / TITLE SCREEN
   ══════════════════════════════════════════════════════════════════════════ -->
   <div id="title-screen" role="dialog" aria-modal="true" aria-label="Game title screen">
+    <div class="landing-nav">
+      <a href="/vision.html">Vision</a>
+      <a href="/contribution.html">Contribution</a>
+      <a href="/tnc.html">T&C</a>
+    </div>
+
     <div class="title-content">
       <div class="tricolor-bar" aria-hidden="true">
         <span class="tc-saffron"></span><span class="tc-white"></span><span class="tc-green"></span>
       </div>
       <h1 class="title-main">
-        THE GREAT DESI ODYSSEY <span class="title-flag" aria-hidden="true">🇮🇳</span>
+        THE GREAT DESI ODYSSEY <sup class="title-flag" aria-hidden="true" style="font-size: 0.5em; vertical-align: super; color: #ffffff;">IN</sup>
       </h1>
       <p class="title-sub">A 3D Voxel Journey Across Indian States,<br />Landmarks &amp; Meme Lore</p>
       
-      <div class="badge-row" aria-label="Game features">
-        <span class="badge">🕹️ GTA Mouse Look</span>
-        <span class="badge">🏔️ Munnar Slope Climbing</span>
-        <span class="badge">🚂 Local Train</span>
-        <span class="badge">🗺️ Aerial Map [M]</span>
-        <span class="badge">⚡ Fast Travel [T]</span>
-      </div>
-
       <button id="start-btn" aria-label="Start the game">▶ START YATRA (SHURU KAREIN)</button>
-      <p class="title-credits">Built by Pixellon</p>
     </div>
+    <p class="title-credits">Built by Pixellon</p>
   </div>
 
   <!-- ══════════════════════════════════════════════════════════════════════

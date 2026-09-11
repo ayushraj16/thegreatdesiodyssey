@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Vision - The Great Desi Odyssey</title>
+</head>
+<body>
+  <div class="container">
+    <a href="/" class="back-btn">&larr; Back to Game</a>
+    <div id="doc-container">Loading...</div>
+  </div>
+  <script type="module">
+    import visionMd from './VISION.md?raw';
+    import { renderDoc } from './src/ui/DocRenderer.js';
+    renderDoc('Vision', visionMd);
+  </script>
+</body>
+</html>
