@@ -1,0 +1,17 @@
+{
+  "name": "desi-odyssey",
+  "version": "1.0.0",
+  "description": "The Great Desi Odyssey - A 3D voxel exploration game celebrating Indian meme culture",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview"
+  },
+  "dependencies": {
+    "three": "^0.170.0"
+  },
+  "devDependencies": {
+    "vite": "^5.4.0"
+  }
+}
