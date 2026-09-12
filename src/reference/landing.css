@@ -1,0 +1,22 @@
+.odyssey-landing { position:fixed; inset:0; z-index:30; overflow:auto; box-sizing:border-box; padding:clamp(24px,5vw,72px); display:flex; flex-direction:column; color:#fff6e3; font-family:system-ui,sans-serif; background:linear-gradient(90deg,rgba(10,28,27,.96) 0%,rgba(10,28,27,.88) 32%,rgba(10,28,27,.45) 66%,rgba(10,28,27,.15) 100%); }
+.odyssey-brand { display:flex; align-items:center; gap:12px; font-size:11px; letter-spacing:.19em; font-weight:700; }
+.odyssey-nav { position:absolute; top:clamp(24px,5vw,72px); right:clamp(24px,5vw,72px); display:flex; gap:clamp(16px,2.5vw,36px); }
+.odyssey-nav a,.odyssey-footer a { color:#fff6e3; text-decoration:none; font-size:11px; font-weight:700; letter-spacing:.12em; text-transform:uppercase; border-bottom:1px solid transparent; transition:color .15s,border-color .15s; }
+.odyssey-nav a:hover,.odyssey-footer a:hover { color:#f4b65f; border-color:#f4b65f; }
+.odyssey-emblem { display:grid; place-items:center; width:38px; height:38px; border:1px solid #d7ad6a; border-radius:50%; color:#f0b357; font-size:25px; }
+.odyssey-intro { margin:auto 0; padding:42px 0; max-width:780px; }
+.odyssey-eyebrow { display:flex; align-items:center; gap:12px; color:#d9bc89; font-size:10px; font-weight:700; letter-spacing:.22em; }
+.odyssey-eyebrow span { width:32px; height:2px; background:#e9a74b; }
+.odyssey-intro h1 { margin:22px 0; font-family:Georgia,'Times New Roman',serif; font-size:clamp(48px,7.2vw,108px); line-height:.99; font-weight:500; letter-spacing:-.045em; }
+.odyssey-intro h1 span { color:#f4b65f; }
+.odyssey-intro p { font-size:clamp(17px,1.6vw,22px); line-height:1.6; color:#d5dace; margin:0 0 30px; }
+.odyssey-start { display:inline-flex; align-items:center; justify-content:space-between; gap:28px; border:0; border-radius:7px; padding:19px 25px; background:#f4b65f; color:#172b25; box-shadow:0 6px 0 #965d24; font:700 clamp(15px,1.5vw,19px) system-ui,sans-serif; cursor:pointer; transition:background .15s,transform .15s; }
+.odyssey-start:hover { background:#ffcb82; transform:translateY(-2px); }
+.odyssey-start:active { transform:translateY(3px); box-shadow:0 3px 0 #965d24; }
+.odyssey-start:focus-visible { outline:3px solid white; outline-offset:6px; }
+.odyssey-start span { font-size:25px; }
+.odyssey-start-note { margin-top:21px; color:#b5c1b1; font-size:11px; }
+.odyssey-footer { border-top:1px solid #ddd4b433; padding-top:23px; display:flex; align-items:center; justify-content:space-between; gap:20px; }
+.odyssey-coffee { display:inline-flex; align-items:center; gap:8px; }
+@media(max-width:600px) { .odyssey-landing { background:linear-gradient(90deg,#0a1c1bf0,#0a1c1bcc); padding-top:92px; } .odyssey-brand { position:absolute; top:24px; left:24px; font-size:8px; max-width:160px; } .odyssey-nav { top:34px; right:24px; gap:10px; } .odyssey-nav a { font-size:8px; letter-spacing:.05em; } .odyssey-eyebrow { font-size:8px; } .odyssey-footer a { font-size:9px; } }
+@media(prefers-reduced-motion:reduce) { .odyssey-start { transition:none; } }

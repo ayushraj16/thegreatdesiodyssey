@@ -1,4 +1,5 @@
 import React, { useEffect, useSyncExternalStore } from 'react';
+import { LandingPage } from './LandingPage.jsx';
 
 export const ITEMS = Object.freeze([
   { id: 'vada-pav', name: 'Vada Pav', region: 'Maharashtra' },
@@ -8,7 +9,7 @@ export const ITEMS = Object.freeze([
 
 /** Engine-owned store: publish telemetry at 2 Hz, never every animation frame. */
 export function createUIStore() {
-  let snapshot = Object.freeze({ fps: null, pingMs: null, selected: 0, score: 0, collected: 0, total: 0, lastPickup: null });
+  let snapshot = Object.freeze({ started: false, soundEnabled: true, fps: null, pingMs: null, selected: 0, score: 0, collected: 0, total: 0, lastPickup: null, cameraHint: 'Click to look · Scroll to zoom' });
   const listeners = new Set();
   return {
     getSnapshot: () => snapshot,
@@ -58,10 +59,11 @@ function ItemIcon({ id }) {
   </svg>;
 }
 
-export function GameUI({ store, onSelect }) {
-  const { fps, pingMs, selected, score, collected, total, lastPickup } = useSyncExternalStore(store.subscribe, store.getSnapshot, store.getSnapshot);
+export function GameUI({ store, onSelect, onStart, onExit, onToggleSound }) {
+  const { started, soundEnabled, fps, pingMs, selected, score, collected, total, lastPickup, cameraHint } = useSyncExternalStore(store.subscribe, store.getSnapshot, store.getSnapshot);
   useEffect(() => {
     function keydown(event) {
+      if (!store.getSnapshot().started) return;
       if (event.repeat || event.ctrlKey || event.altKey || event.metaKey ||
           event.target.closest?.('input, textarea, select, [contenteditable="true"]')) return;
       const slot = ['Digit1', 'Digit2', 'Digit3'].indexOf(event.code);
@@ -70,7 +72,12 @@ export function GameUI({ store, onSelect }) {
     window.addEventListener('keydown', keydown);
     return () => window.removeEventListener('keydown', keydown);
   }, [store, onSelect]);
+  if (!started) return <LandingPage onStart={onStart} />;
   return <div style={{ position: 'fixed', inset: 0, pointerEvents: 'none', zIndex: 10, fontFamily: 'system-ui, sans-serif', color: '#f7f7ef' }}>
+    <div style={{ position: 'absolute', right: 12, top: 12, display: 'flex', gap: 8, pointerEvents: 'auto' }}>
+      <button type="button" onClick={onToggleSound} aria-label={soundEnabled ? 'Mute sound' : 'Enable sound'} aria-pressed={soundEnabled} style={{ border: '1px solid #c6ae79', borderRadius: 7, padding: '9px 12px', background: '#142a30df', color: '#fff6e3', cursor: 'pointer' }}>Sound {soundEnabled ? 'on' : 'off'}</button>
+      <button type="button" onClick={onExit} aria-label="Exit game" style={{ border: '1px solid #d98d78', borderRadius: 7, padding: '9px 14px', background: '#4a2020e8', color: '#fff6e3', cursor: 'pointer', fontWeight: 700 }}>Exit</button>
+    </div>
     <div style={{ position: 'absolute', top: 'max(10px, env(safe-area-inset-top))', left: 'max(12px, env(safe-area-inset-left))', padding: '8px 12px', background: 'rgba(18,29,39,.82)', border: '1px solid #a2b4be', borderRadius: 8, fontWeight: 600, fontSize: 'clamp(12px, 1.4vw, 20px)', fontVariantNumeric: 'tabular-nums' }}>
       WebGL Stats: {fps === null ? '—' : Math.round(fps)} FPS, Ping: {pingMs === null ? '—' : `${Math.round(pingMs)}ms`}
     </div>
@@ -81,7 +88,7 @@ export function GameUI({ store, onSelect }) {
       {total > 0 && collected === total && <div style={{ marginTop: 6, color: '#bfeab3' }}>Odyssey complete!</div>}
     </div>
     <div style={{ position: 'absolute', bottom: 145, left: '50%', transform: 'translateX(-50%)', width: 'max-content', maxWidth: '90vw', textAlign: 'center', padding: '7px 12px', background: '#142a30d9', borderRadius: 8, fontSize: 12 }}>
-      WASD / arrows: move · Space: jump · Shift: run · M: map<br />Walk into floating foods to collect them. Use bridges to cross rivers.
+      {cameraHint}<br />WASD / arrows: move · Space: jump · Shift: run · M: map<br />Walk into floating foods to collect them. Use bridges to cross rivers.
     </div>
     <div role="group" aria-label="Regional inventory" style={{ position: 'absolute', bottom: 'max(16px, env(safe-area-inset-bottom))', left: '50%', transform: 'translateX(-50%)', display: 'flex', gap: 4, padding: 5, background: 'rgba(16,29,36,.83)', border: '2px solid #8c9a9b', borderRadius: 14, boxShadow: '0 4px 20px #0006' }}>
       {ITEMS.map((item, index) => <button key={item.id} type="button" aria-label={`${index + 1}: ${item.name}, ${item.region}`} aria-pressed={selected === index} title={`${item.name} · ${index + 1}`}

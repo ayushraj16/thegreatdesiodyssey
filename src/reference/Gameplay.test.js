@@ -65,3 +65,14 @@ test('normalized diagonal motion and consistent movement across frame rates', ()
   assert.ok(Math.abs(run(['KeyD'],1/60) - run(['KeyD','KeyW'],1/60)) < .05);
   assert.ok(Math.abs(run(['KeyD'],1/30) - run(['KeyD'],1/120)) < .05);
 });
+
+test('camera yaw rotates forward movement and pitch is bounded', () => {
+  const game = setup(new THREE.Vector3(-42,3,-20)), { player } = game;
+  player.orbit.yaw = Math.PI / 2; player.keys.add('KeyW');
+  for (let i = 0; i < 30; i++) player.update(1/60);
+  assert.ok(player.position.x < -46); assert.ok(Math.abs(player.position.z + 20) < .01);
+  player.orbit.dragging = true;
+  player.orbit.look({movementX:0,movementY:100000}); assert.equal(player.orbit.pitch,1.35);
+  player.orbit.look({movementX:0,movementY:-100000}); assert.equal(player.orbit.pitch,.12);
+  game.dispose();
+});

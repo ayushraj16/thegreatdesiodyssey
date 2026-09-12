@@ -1,13 +1,15 @@
 import * as THREE from 'three';
 import { terrainHeight } from './BiomeManager.js';
 import { disposeGroup } from './VoxelBatch.js';
+import { ThirdPersonCamera } from './ThirdPersonCamera.js';
 
 // Match the rendered four-unit tile centers, including shoreline steps.
 export function tileHeight(x, z) { return terrainHeight(Math.floor(x / 4) * 4 + 2, Math.floor(z / 4) * 4 + 2); }
 
 export class Player {
-  constructor(scene, camera, bridges, { inputTarget = window, spawn = new THREE.Vector3(-42, 3, -20) } = {}) {
+  constructor(scene, camera, bridges, { inputTarget = window, canvas, onCameraHint, spawn = new THREE.Vector3(-42, 3, -20) } = {}) {
     this.camera = camera; this.bridges = bridges; this.inputTarget = inputTarget;
+    this.enabled = true;
     this.spawn = spawn.clone(); this.position = spawn.clone(); this.velocity = new THREE.Vector3();
     this.keys = new Set(); this.grounded = true; this.jumpQueued = false; this.disposed = false; this.mapMode = false;
     this.bounds = new THREE.Box3(); this.scratchBounds = new THREE.Box3();
@@ -40,18 +42,18 @@ export class Player {
     box(this.root, 0, 3.7, .62, .18, .1, .15, '#18242d');
     scene.add(this.root);
     this.keydown = event => {
+      if (!this.enabled) return;
       if (event.target?.closest?.('input,textarea,select,[contenteditable="true"]') || event.ctrlKey || event.metaKey || event.altKey) return;
       if (!['KeyW','KeyA','KeyS','KeyD','ArrowUp','ArrowDown','ArrowLeft','ArrowRight','Space','ShiftLeft','ShiftRight','KeyM'].includes(event.code)) return;
       event.preventDefault(); this.keys.add(event.code);
       if (event.code === 'Space' && !event.repeat) this.jumpQueued = true;
-      if (event.code === 'KeyM' && !event.repeat) this.mapMode = !this.mapMode;
+      if (event.code === 'KeyM' && !event.repeat) { this.mapMode = !this.mapMode; this.orbit.mapMode = this.mapMode; this.orbit.release(); }
     };
     this.keyup = event => this.keys.delete(event.code);
     this.blur = () => { this.keys.clear(); this.jumpQueued = false; this.velocity.x = this.velocity.z = 0; };
     inputTarget.addEventListener('keydown', this.keydown); inputTarget.addEventListener('keyup', this.keyup); inputTarget.addEventListener('blur', this.blur);
-    this.cameraTarget = spawn.clone().add(new THREE.Vector3(0, 2, 0));
-    this.cameraOffset = new THREE.Vector3(0, 36, 46); this.desiredCamera = new THREE.Vector3(); this.desiredTarget = new THREE.Vector3();
-    camera.position.copy(this.cameraTarget).add(this.cameraOffset); camera.lookAt(this.cameraTarget); this.updateBounds();
+    this.orbit = new ThirdPersonCamera(camera, canvas, spawn, { groundHeight: tileHeight, onHint: onCameraHint });
+    this.updateBounds();
   }
   groundAt(x, z) { return Math.max(tileHeight(x, z), this.bridges.heightAt(x, z)); }
   boundsAt(position, box) {
@@ -72,6 +74,10 @@ export class Player {
     let x = Number(held('KeyD','ArrowRight')) - Number(held('KeyA','ArrowLeft'));
     let z = Number(held('KeyS','ArrowDown')) - Number(held('KeyW','ArrowUp'));
     const length = Math.hypot(x, z); if (length) { x /= length; z /= length; }
+    const yaw = this.mapMode ? 0 : this.orbit.yaw;
+    const localX = x;
+    x = localX * Math.cos(yaw) + z * Math.sin(yaw);
+    z = z * Math.cos(yaw) - localX * Math.sin(yaw);
     const speed = held('ShiftLeft','ShiftRight') ? 19 : 12;
     const alpha = 1 - Math.exp(-14 * dt);
     this.velocity.x = THREE.MathUtils.lerp(this.velocity.x, x * speed, alpha);
@@ -100,15 +106,12 @@ export class Player {
     // Bound each collision step to 1/120 s, including low-FPS frames.
     let remaining = Math.min(Math.max(dt, 0), .1);
     while (remaining > 1e-8) { const step = Math.min(remaining, 1 / 120); this.step(step); remaining -= step; }
-    if (this.mapMode) this.desiredTarget.set(0, 0, -7);
-    else this.desiredTarget.copy(this.position).y += 2;
-    this.cameraTarget.lerp(this.desiredTarget, 1 - Math.exp(-7 * dt));
-    this.desiredCamera.copy(this.cameraTarget).add(this.mapMode ? new THREE.Vector3(0, 195, 262) : this.cameraOffset);
-    this.camera.position.lerp(this.desiredCamera, 1 - Math.exp(-6 * dt)); this.camera.lookAt(this.cameraTarget);
+    this.orbit.mapMode = this.mapMode; this.orbit.update(dt, this.position);
   }
   dispose() {
     if (this.disposed) return; this.disposed = true; this.blur();
     this.inputTarget.removeEventListener('keydown', this.keydown); this.inputTarget.removeEventListener('keyup', this.keyup); this.inputTarget.removeEventListener('blur', this.blur);
+    this.orbit.dispose();
     disposeGroup(this.root);
   }
 }

@@ -42,9 +42,9 @@ export class Environment {
   _buildSky() {
     const uniforms = {
       // Daylight Cyan Blue
-      uTop:     { value: new THREE.Color('#29b6f6') },
+      uTop: { value: new THREE.Color('#29b6f6') },
       uHorizon: { value: new THREE.Color('#81d4fa') },
-      uGround:  { value: new THREE.Color('#c8b080') }
+      uGround: { value: new THREE.Color('#c8b080') }
     };
     const skyGeo = new THREE.SphereGeometry(200, 32, 15);
     const skyMat = new THREE.ShaderMaterial({
@@ -60,13 +60,13 @@ export class Environment {
 
   _buildClouds() {
     const cloudMat = new THREE.MeshLambertMaterial({ color: '#ffffff', flatShading: true });
-    
+
     for (let i = 0; i < 20; i++) {
       const cloudGroup = new THREE.Group();
-      
+
       // 3-5 voxels per cloud
       const numVoxels = 3 + Math.floor(Math.random() * 3);
-      for(let j = 0; j < numVoxels; j++) {
+      for (let j = 0; j < numVoxels; j++) {
         const size = 1 + Math.random() * 2;
         const box = new THREE.Mesh(new THREE.BoxGeometry(size, size, size), cloudMat);
         box.position.set(
@@ -76,17 +76,17 @@ export class Environment {
         );
         cloudGroup.add(box);
       }
-      
+
       // Initial position
       cloudGroup.position.set(
         -150 + Math.random() * 300,
         35 + Math.random() * 10,
         -200 + Math.random() * 400
       );
-      
+
       // Speed
       cloudGroup.userData.speed = 0.5 + Math.random() * 1.5;
-      
+
       this.scene.add(cloudGroup);
       this.clouds.push(cloudGroup);
     }

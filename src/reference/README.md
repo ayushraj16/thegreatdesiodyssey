@@ -1,5 +1,9 @@
 # Tri-state reference client
 
+### Third-person mouse camera
+
+Click the canvas to capture the mouse, move it to orbit horizontally/vertically, scroll to zoom, and press Escape to release. If pointer lock is unavailable, hold the left mouse button and drag. WASD is relative to camera yaw; the character turns toward travel while the camera can orbit independently. Pitch and zoom are bounded, and the camera stays above terrain. M releases the mouse and enters the overview; pressing M again restores the previous orbit angle. Hotbar clicks never capture the mouse. `ThirdPersonCamera.js` owns the listeners and removes them during player teardown. This camera avoids terrain but does not yet sweep against decorative buildings.
+
 Run `npm run dev`, then open `/` to load this scene on the main game page. `/reference.html` is also available; the original explorer is preserved at `/classic.html`. `npm run build` includes all three pages. React and React DOM are installed; Vite's JSX transform handles these modules without an additional plugin. Run streaming tests with `node --test src/reference/BiomeManager.test.js`.
 
 ## Reference composition
