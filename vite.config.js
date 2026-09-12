@@ -7,6 +7,8 @@ export default defineConfig({
     rollupOptions: {
       input: {
         main: resolve(__dirname, 'index.html'),
+        classic: resolve(__dirname, 'classic.html'),
+        reference: resolve(__dirname, 'reference.html'),
         vision: resolve(__dirname, 'vision.html'),
         contribution: resolve(__dirname, 'contribution.html'),
         tnc: resolve(__dirname, 'tnc.html')
